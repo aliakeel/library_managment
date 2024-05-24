@@ -1,6 +1,7 @@
 package com.akeel.library.service;
 
 import com.akeel.library.dto.BorrowingRecordDto;
+import com.akeel.library.exception.BorrowingCreationFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +12,7 @@ public interface BorrowingRecordService {
     Page<BorrowingRecordDto> findByPatronNameContainingOrBookTitleContaining(String patronName, String bookTitle, Pageable pageable);
     List<BorrowingRecordDto> findAll();
     Optional<BorrowingRecordDto> findById(Long id);
-    BorrowingRecordDto save(BorrowingRecordDto borrowingRecordDto);
+    BorrowingRecordDto save(BorrowingRecordDto borrowingRecordDto) throws BorrowingCreationFailureException;
     Optional<BorrowingRecordDto> update(Long id, BorrowingRecordDto borrowingRecordDto);
 
     BorrowingRecordDto borrowBook(Long bookId, Long patronId);

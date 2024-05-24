@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +62,14 @@ public class BorrowingRecordController implements BorrowingRecordApi {
 
     @PostMapping
     public ResponseEntity<BorrowingRecordDto> createBorrowingRecord(@Valid @RequestBody BorrowingRecordDto borrowingRecordDto) {
-        BorrowingRecordDto savedBorrowingRecord = borrowingRecordService.save(borrowingRecordDto);
-        return ResponseEntity.ok(savedBorrowingRecord);
+        try {
+            BorrowingRecordDto savedBorrowingRecord = borrowingRecordService.save(borrowingRecordDto);
+            return ResponseEntity.ok(savedBorrowingRecord);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatusCode.valueOf(409)).body(null);
+        }
+
+
     }
 
 

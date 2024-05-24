@@ -1,5 +1,6 @@
 package com.akeel.library.service.impl;
 
+import com.akeel.library.exception.BorrowingCreationFailureException;
 import com.akeel.library.mapping.Mapping;
 import com.akeel.library.model.Book;
 import com.akeel.library.model.BorrowingRecord;
@@ -22,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static com.akeel.library.mapping.Mapping.toBookDto;
 
 @Service
 public class BorrowingRecordServiceImpl implements BorrowingRecordService {
@@ -53,8 +56,14 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
     }
 
     @Transactional
-    public BorrowingRecordDto save(BorrowingRecordDto borrowingRecord) {
-        return Mapping.toBorrowingRecordDto(borrowingRecordRepository.save(Mapping.toBorrowingRecord(borrowingRecord)));
+    public BorrowingRecordDto save(BorrowingRecordDto borrowingRecord) throws BorrowingCreationFailureException {
+        try {
+            Patron patron = patronRepository.save(borrowingRecord.getPatron());
+            Book book = bookRepository.save(borrowingRecord.getBook());
+            return borrowBook(book.getId(),patron.getId());
+        }catch (Exception e){
+            throw new BorrowingCreationFailureException();
+        }
     }
 
 
